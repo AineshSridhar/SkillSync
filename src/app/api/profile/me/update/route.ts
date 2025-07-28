@@ -3,15 +3,15 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/db';
 import { getPdfText } from "@/utils/pdf";
 import { getGeminiScores } from "@/utils/gemini";
-import { getUserIdFromRequest } from '@/utils/auth';
+import { getUserFromSession } from '@/utils/auth';
 
 export async function POST(request: Request) {
   console.log('god is great');
 
   // 1. Auth
   const cookieStore = await cookies();
-  const userId = await getUserIdFromRequest({ cookies: cookieStore });
-  if (!userId) {
+  const user = await getUserFromSession();
+  if (!user) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
   console.log('1');
@@ -22,20 +22,20 @@ export async function POST(request: Request) {
     // 2. Update user and profile in the database
     await prisma.$transaction([
       prisma.user.update({
-        where: { id: userId },
+        where: { id: user.id },
         data: { name },
       }),
       prisma.profile.upsert({
-        where: { userId },
+        where: { id: user.id },
         update: { bio, linkedin, leetcode },
-        create: { userId, bio, linkedin, leetcode },
+        create: { userId: user.id, bio, linkedin, leetcode },
       }),
     ]);
     console.log(0);
 
     // 3. Fetch the updated profile to get the resumeFile (as Buffer)
     const profile = await prisma.profile.findUnique({
-      where: { userId },
+      where: { id: user.id },
       select: { resumeFile: true },
     });
 
@@ -53,14 +53,14 @@ export async function POST(request: Request) {
       } else {
         aiScores = await getGeminiScores(text);
           await prisma.userScore.upsert({
-            where: { userId },
+            where: { userId: user.id },
             update: {
               automatedWorkEthic: aiScores.workEthic,
               automatedCreativity: aiScores.creativity,
               automatedSkills: aiScores.skills,
             },
             create: {
-              userId,
+              userId: user.id,
               automatedWorkEthic: aiScores.workEthic,
               automatedCreativity: aiScores.creativity,
               automatedSkills: aiScores.skills,
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         // Optionally, return a partial success or continue
       }
     } else {
-      console.log('No resume file found for user:', userId);
+      console.log('No resume file found for user:', user.id);
     }
 
     // 4. Return scores in response (or null if not updated)

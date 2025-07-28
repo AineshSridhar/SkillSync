@@ -3,13 +3,15 @@ import prisma from "@/lib/db";
 import { getUserFromSession } from "@/utils/auth";
 
 export async function POST(request: NextRequest) {
-  const userId = await getUserFromSession(request);
-  if (!userId) {
+  const user = await getUserFromSession(request);
+  if (!user) {
     return NextResponse.json(
       { error: "Unauthorized: No valid token" },
       { status: 401 }
     );
   }
+
+  const id = user.id
 
   // 2. Parse the uploaded file from formData
   const formData = await request.formData();
@@ -34,7 +36,7 @@ export async function POST(request: NextRequest) {
   // 5. Update the profile with the resume file
   try {
     await prisma.profile.update({
-      where: { userId },
+      where: { userId: id },
       data: { resumeFile: buffer },
     });
 
@@ -49,13 +51,15 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const userId = await getUserFromSession(request);
-  if (!userId) {
+  const user = await getUserFromSession(request);
+  if (!user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  const id = user.id;
+
   const profile = await prisma.profile.findUnique({
-    where: { userId },
+    where: { userId: id },
     select: { resumeFile: true },
   });
 
