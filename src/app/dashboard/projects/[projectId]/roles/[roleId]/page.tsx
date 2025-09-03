@@ -40,19 +40,19 @@ export default function RoleApplicationsPage() {
   }, [roleId]);
 
   const handleDecision = async (applicationId: number, decision: 'accept' | 'reject') => {
-  const res = await fetch(`/api/applications/${applicationId}/handle`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: decision }),
-  });
+    const res = await fetch(`/api/applications/${applicationId}/handle`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: decision }),
+    });
 
-  const data = await res.json();
-  if (res.ok) {
-    console.log(`${decision}ed successfully`, data);
-    // Optionally: refresh page or remove from local state
-  } else {
-    alert(data.error || 'Something went wrong');
-  }
+    const data = await res.json();
+    if (res.ok) {
+      console.log(`${decision}ed successfully`, data);
+      // Optionally: refresh page or remove from local state
+    } else {
+      alert(data.error || 'Something went wrong');
+    }
 };
 
   return (
@@ -116,7 +116,7 @@ export default function RoleApplicationsPage() {
                           {new Date(app.appliedAt).toLocaleDateString()}
                         </p>
                         <a
-                          className="text-sm text-orange-600 underline mt-1 inline-block"
+                          className="text-sm text-orange-600 underline mt-1 inline-block cursor-pointer"
                           href={app.user?.profile?.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -126,13 +126,13 @@ export default function RoleApplicationsPage() {
                       </div>
                     <div className="flex gap-2 mt-2">
                       <button
-                        className="px-4 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+                        className="px-4 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
                         onClick={() => handleDecision(app.id, 'accept')}
                       >
                         Accept
                       </button>
                       <button
-                        className="px-4 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                        className="px-4 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
                         onClick={() => handleDecision(app.id, 'reject')}
                       >
                         Reject

@@ -30,6 +30,7 @@ export default function Home() {
               role,
             }))
           );
+          console.log(projectRolePairs)
           setProjects(projectRolePairs);
         });
     }
@@ -97,7 +98,7 @@ export default function Home() {
                   <h3 className="font-semibold text-orange-500 text-lg">{project.title}</h3>
                   <p className="text-sm text-gray-600 mb-1">{project.description}</p>
                   <p className="text-sm text-gray-700">Owner: {project.owner.name}</p>
-                  <p className="text-sm text-gray-700">Role: {role.title}</p>
+                  <p className="text-sm text-gray-700">Role: {role.role}</p>
                 </li>
               ))}
             </ul>

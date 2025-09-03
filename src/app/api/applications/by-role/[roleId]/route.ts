@@ -8,9 +8,9 @@ type Context = {
 
 export async function GET(
   req: NextRequest,
-  context: Promise<Context>
+  context: Context
 ) {
-  const { params } = await context;
+  const { params } = context;
   const roleId = parseInt(params?.roleId ?? '', 10);
   console.log('Parsed roleId:', roleId);
 
@@ -34,7 +34,7 @@ export async function GET(
     }
 
     const applications = await prisma.application.findMany({
-      where: { projectRequiredRoleId: roleId },
+      where: { projectRequiredRoleId: roleId, status: "Applied" },
       include: {
         user: {
           select: {

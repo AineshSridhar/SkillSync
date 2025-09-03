@@ -13,9 +13,10 @@ export async function PATCH(
     }
 
     const applicationId = parseInt(params.applicationId);
+    console.log(applicationId);
     const { action } = await req.json(); // Accept or Reject
 
-    if (!['accept', 'reject'].includes(action)) {
+      if (!['accept', 'reject'].includes(action)) {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
 

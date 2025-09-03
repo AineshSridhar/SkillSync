@@ -30,13 +30,11 @@ type AIScores = {
 type ProfileFormProps = {
   user: ProfileData;
   isOwner: boolean;
-  initialAiScores?: AIScores | null;
 };
 
 export default function ProfileForm({
   user,
   isOwner,
-  initialAiScores = null,
 }: ProfileFormProps) {
   const router = useRouter();
   const pfpInputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +63,8 @@ export default function ProfileForm({
   const [selectedResumeFile, setSelectedResumeFile] = useState<File | null>(null);
   const [resumeName, setResumeName] = useState<string | null>(null);
 
-  const [aiScores, setAiScores] = useState<AIScores | null>(initialAiScores);
+  const [aiScores, setAiScores] = useState<AIScores | null>(null);
+  const [isLoadingScores, setIsLoadingScores] = useState(true);
 
   // Initialize form data from props
   useEffect(() => {
@@ -81,6 +80,28 @@ export default function ProfileForm({
     setSelectedResumeFile(null);
     setResumeName(null);
   }, [user]);
+
+  // Fetch AI scores from the backend
+  useEffect(() => {
+    async function fetchAiScores() {
+      setIsLoadingScores(true);
+      try {
+        const res = await fetch("/api/profile/me/scores");
+        if (res.ok) {
+          const data = await res.json();
+          setAiScores(data.scores);
+        } else {
+          setAiScores(null);
+        }
+      } catch (err) {
+        console.error("Failed to fetch AI scores:", err);
+        setAiScores(null);
+      } finally {
+        setIsLoadingScores(false);
+      }
+    }
+    fetchAiScores();
+  }, [user.name]); // Re-fetch when user changes
 
   // Fetch resume from backend on mount or user change
   useEffect(() => {
@@ -444,7 +465,12 @@ export default function ProfileForm({
 
           {/* Speedometer Panel (right side on large screens) */}
           <aside className="w-full lg:w-[300px] flex-shrink-0">
-            {aiScores ? (
+            {isLoadingScores ? (
+              <div className="bg-white rounded-xl shadow p-6 text-gray-500 text-center">
+                <LoaderCircle className="w-8 h-8 mx-auto mb-2 animate-spin text-orange-500" />
+                <div className="text-sm">Loading AI scores...</div>
+              </div>
+            ) : aiScores ? (
               <AIScoreSpeedometer scores={aiScores} />
             ) : (
               <div className="bg-white rounded-xl shadow p-6 text-gray-500 text-center">
