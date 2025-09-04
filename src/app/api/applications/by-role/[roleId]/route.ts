@@ -2,13 +2,9 @@ import { getUserFromSession } from '@/utils/auth';
 import prisma from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
-type Context = {
-  params: { roleId?: string }
-};
-
 export async function GET(
   req: NextRequest,
-  context: Context
+  context: any
 ) {
   const { params } = context;
   const roleId = parseInt(params?.roleId ?? '', 10);
@@ -19,7 +15,7 @@ export async function GET(
   }
 
   try {
-    const user = await getUserFromSession(req);
+    const user = await getUserFromSession();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

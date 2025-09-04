@@ -4,10 +4,10 @@ import { trackFallbackParamAccessed } from 'next/dist/server/app-render/dynamic-
 
 export async function GET(
     request: Request, 
-    {params}: {params: {id: string}}
+    context: any
 ){
     const user = await prisma.user.findUnique({
-        where: {id: Number(params.id)},
+        where: {id: Number(context.params.id)},
         include: {profile: true, skills: {include: {skill: true}}}
     })
     if(!user) return NextResponse.json({error: 'User not found'}, {status: 404})

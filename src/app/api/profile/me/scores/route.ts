@@ -4,7 +4,7 @@ import prisma from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await getUserFromSession(req);
+    const user = await getUserFromSession();
     if (!user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }

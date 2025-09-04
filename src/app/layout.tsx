@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "../components/Navbar"
+import Navbar from "../components/Navbar";
 import { UserContextProvider } from "../components/UserContextProvider";
 import { getUserFromSession } from "@/utils/auth";
 
-
-const geistSans = Geist({
+// Geist Sans (variable font)
+const geistSans = localFont({
+  src: "../../public/fonts/Geist/Geist-VariableFont_wght.ttf",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+// Geist Mono (variable font)
+const geistMono = localFont({
+  src: "../../public/fonts/GeistMono/GeistMono-VariableFont_wght.ttf",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -29,11 +30,9 @@ export default async function RootLayout({
   const user = await getUserFromSession();
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <UserContextProvider user={user}>
-          <Navbar/>
+          <Navbar />
           {children}
         </UserContextProvider>
       </body>

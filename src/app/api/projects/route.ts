@@ -17,7 +17,7 @@ return NextResponse.json({ projects })
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    const session = await getUserFromSession(request);
+    const session = await getUserFromSession();
     console.log('print: ', session);
 
     if (!session) {

@@ -27,7 +27,9 @@ export default function ProjectDetailsPopup({ projectId, roleId, currentUserId, 
         const res = await fetch(`/api/projects/${projectId}`);
         if (!res.ok) throw new Error('Failed to fetch project details.');
         const data = await res.json();
+
         setProject(data);
+
         // Find the specific role by roleId
         const foundRole = data.requiredRoles.find((r: any) => r.id === roleId);
         setRole(foundRole);
@@ -47,6 +49,12 @@ export default function ProjectDetailsPopup({ projectId, roleId, currentUserId, 
 
     return () => clearTimeout(timer);
   }, [projectId, roleId]);
+
+    useEffect(() => {
+    if (project) {
+      console.log("Project state is now:", project);
+    }
+  }, [project]);
 
   const handleRequestToJoin = async () => {
     if (!role) {
@@ -74,6 +82,7 @@ export default function ProjectDetailsPopup({ projectId, roleId, currentUserId, 
     setTimeout(onClose, 300);
   };
 
+  const isPartner = project && project.partnerships.some((partner:any) => partner.user.id === currentUserId);
 
   return (
     <div
@@ -163,7 +172,7 @@ export default function ProjectDetailsPopup({ projectId, roleId, currentUserId, 
               >
                 Close
               </button>
-            {project.owner.id !== currentUserId && (
+            {project.owner.id !== currentUserId && !isPartner && (
               <button
                 className="px-6 py-2 rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors"
                 onClick={handleRequestToJoin}

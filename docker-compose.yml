@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: skillSync_db
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerty
+      MYSQL_DATABASE: skillSync_db
+      MYSQL_USER: skillSync_user
+      MYSQL_PASSWORD: dfghj
+    ports:
+      - "3306:3306"
+    volumes:
+      - skillSync_mysql_data:/var/lib/mysql
+  
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skillSync_app
+    ports:
+      - "3000:3000"
+    environment:
+      # Use the service name 'db' as the host to connect to the database container
+      DATABASE_URL: "mysql://skillSync_user:dfghj@db:3306/skillSync_db"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    # Run the migrations at runtime after the database is available, then start the dev server
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+
+volumes:
+  skillSync_mysql_data:

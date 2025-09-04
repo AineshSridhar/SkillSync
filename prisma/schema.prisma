@@ -34,7 +34,7 @@ model Profile {
   resumeUrl  String?           // S3/local path for resume (future use)
   resumeFile Bytes?            // Store resume file directly in MySQL (temporary)
   profilePicUrl String?        // S3/local path for profile pic (future use)
-  profilePic  Bytes?           // Store profile picture directly in MySQL (temporary)
+  profilePic  String?           // Store profile picture directly in MySQL (temporary)
 }
 
 model Skill {

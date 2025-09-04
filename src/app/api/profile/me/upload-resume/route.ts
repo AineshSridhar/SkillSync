@@ -3,7 +3,7 @@ import prisma from "@/lib/db";
 import { getUserFromSession } from "@/utils/auth";
 
 export async function POST(request: NextRequest) {
-  const user = await getUserFromSession(request);
+  const user = await getUserFromSession();
   if (!user) {
     return NextResponse.json(
       { error: "Unauthorized: No valid token" },
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const user = await getUserFromSession(request);
+  const user = await getUserFromSession();
   if (!user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }

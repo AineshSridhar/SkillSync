@@ -40,7 +40,13 @@ export async function POST(request: Request) {
             process.env.JWT_SECRET!,
             { expiresIn: '1h' }
         )
-        cookieStore.set({
+        const response = NextResponse.json({
+            message: 'User registered',
+            user: { id: user.id, email: user.email },
+            token
+        }, { status: 201 })
+
+        response.cookies.set({
             name: 'token',
             value: token,
             httpOnly: true,
@@ -50,11 +56,7 @@ export async function POST(request: Request) {
             maxAge: 60 * 60, // 1 hour
         })
 
-        return NextResponse.json({
-            message: 'User registered',
-            user: { id: user.id, email: user.email },
-            token
-        }, { status: 201 })
+        return response
 
     } catch (error) {
         console.error(error)

@@ -1,7 +1,10 @@
-npm-debug.log*
-.git
-.next
-Dockerfile*
-docker-compose.yml
-*.md
 node_modules
+npm-debug.log*
+.next
+.env
+.dockerignore
+Dockerfile
+docker-compose.yml
+.git
+.gitignore
+README.md

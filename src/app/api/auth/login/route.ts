@@ -26,7 +26,13 @@ export async function POST(request: Request) {
         )
 
         // Set cookie
-        await cookies().set({
+        const response = NextResponse.json({
+            message: 'Login successful',
+            user: { id: user.id, email: user.email },
+            token
+        }, { status: 200 })
+
+        response.cookies.set({
             name: 'token',
             value: token,
             httpOnly: true,
@@ -36,11 +42,7 @@ export async function POST(request: Request) {
             maxAge: 60 * 60, // 1 hour
         })
 
-        return NextResponse.json({
-            message: 'Login successful',
-            user: { id: user.id, email: user.email },
-            token
-        }, { status: 200 })
+        return response
 
     } catch (error) {
         return NextResponse.json({ error: 'Login failed' }, { status: 500 })
