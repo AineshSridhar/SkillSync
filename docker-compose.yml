@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  db:
+  skillSync_db:
     image: mysql:8.0
     container_name: skillSync_db
     environment:
@@ -13,24 +11,36 @@ services:
       - "3306:3306"
     volumes:
       - skillSync_mysql_data:/var/lib/mysql
-  
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
+      timeout: 3s
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: skillSync_app
+    env_file:
+      - .env
     ports:
       - "3000:3000"
-    environment:
-      # Use the service name 'db' as the host to connect to the database container
-      DATABASE_URL: "mysql://skillSync_user:dfghj@db:3306/skillSync_db"
     depends_on:
-      - db
-    volumes:
-      - .:/app
-      - /app/node_modules
-    # Run the migrations at runtime after the database is available, then start the dev server
-    command: sh -c "npx prisma migrate deploy && npm run dev"
+      skillSync_db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for MySQL to be ready...' &&
+        until mysqladmin ping -h skillSync_db -u root -pqwerty --silent; do
+          sleep 2;
+        done &&
+        echo 'Running Prisma migrations...' &&
+        npx prisma migrate deploy &&
+        echo 'Starting app...' &&
+        npm start
+      "
+
 
 volumes:
   skillSync_mysql_data:

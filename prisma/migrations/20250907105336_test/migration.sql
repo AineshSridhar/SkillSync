@@ -14,10 +14,14 @@ CREATE TABLE `User` (
 CREATE TABLE `Profile` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
+    `name` VARCHAR(191) NULL,
     `bio` VARCHAR(191) NULL,
     `linkedin` VARCHAR(191) NULL,
     `leetcode` VARCHAR(191) NULL,
     `resumeUrl` VARCHAR(191) NULL,
+    `resumeFile` LONGBLOB NULL,
+    `profilePicUrl` VARCHAR(191) NULL,
+    `profilePic` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Profile_userId_key`(`userId`),
     PRIMARY KEY (`id`)
@@ -62,15 +66,61 @@ CREATE TABLE `Partnership` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `AIScore` (
+CREATE TABLE `Application` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
+    `projectRequiredRoleId` INTEGER NULL,
+    `status` VARCHAR(191) NULL,
+    `appliedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ProjectRequiredRole` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `projectId` INTEGER NOT NULL,
+    `role` VARCHAR(191) NOT NULL,
+    `expertiseLevel` VARCHAR(191) NOT NULL,
+    `peopleRequired` INTEGER NOT NULL DEFAULT 1,
+    `isLive` BOOLEAN NOT NULL DEFAULT true,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PeerRating` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `ratedUserId` INTEGER NOT NULL,
+    `raterId` INTEGER NOT NULL,
+    `projectId` INTEGER NULL,
     `workEthic` DOUBLE NULL,
     `creativity` DOUBLE NULL,
     `skills` DOUBLE NULL,
+
+    UNIQUE INDEX `PeerRating_ratedUserId_raterId_projectId_key`(`ratedUserId`, `raterId`, `projectId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `UserScore` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
+    `automatedWorkEthic` DOUBLE NULL,
+    `automatedCreativity` DOUBLE NULL,
+    `automatedSkills` DOUBLE NULL,
+    `automatedOverall` DOUBLE NULL,
+    `peerWorkEthic` DOUBLE NULL,
+    `peerCreativity` DOUBLE NULL,
+    `peerSkills` DOUBLE NULL,
+    `peerOverall` DOUBLE NULL,
+    `finalWorkEthic` DOUBLE NULL,
+    `finalCreativity` DOUBLE NULL,
+    `finalSkills` DOUBLE NULL,
+    `finalOverall` DOUBLE NULL,
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `AIScore_userId_key`(`userId`),
+    UNIQUE INDEX `UserScore_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -93,4 +143,22 @@ ALTER TABLE `Partnership` ADD CONSTRAINT `Partnership_projectId_fkey` FOREIGN KE
 ALTER TABLE `Partnership` ADD CONSTRAINT `Partnership_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `AIScore` ADD CONSTRAINT `AIScore_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Application` ADD CONSTRAINT `Application_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Application` ADD CONSTRAINT `Application_projectRequiredRoleId_fkey` FOREIGN KEY (`projectRequiredRoleId`) REFERENCES `ProjectRequiredRole`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ProjectRequiredRole` ADD CONSTRAINT `ProjectRequiredRole_projectId_fkey` FOREIGN KEY (`projectId`) REFERENCES `Project`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PeerRating` ADD CONSTRAINT `PeerRating_ratedUserId_fkey` FOREIGN KEY (`ratedUserId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PeerRating` ADD CONSTRAINT `PeerRating_raterId_fkey` FOREIGN KEY (`raterId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PeerRating` ADD CONSTRAINT `PeerRating_projectId_fkey` FOREIGN KEY (`projectId`) REFERENCES `Project`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `UserScore` ADD CONSTRAINT `UserScore_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
