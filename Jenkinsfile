@@ -19,6 +19,14 @@ pipeline {
       steps { checkout scm }
     }
 
+    stage('Inject Env File') {
+      steps {
+        withCredentials([file(credentialsId: 'synergy-env', variable: 'ENV_FILE')]) {
+          sh 'cp $ENV_FILE .env'
+        }
+      }
+    }
+
     stage('Build Image') {
       steps {
         sh "docker build --progress=plain -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
