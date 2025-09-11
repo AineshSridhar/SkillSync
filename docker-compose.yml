@@ -8,7 +8,7 @@ services:
       MYSQL_USER: skillSync_user
       MYSQL_PASSWORD: dfghj
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - skillSync_mysql_data:/var/lib/mysql
     healthcheck:
