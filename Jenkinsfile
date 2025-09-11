@@ -54,8 +54,6 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
           sh 'echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin'
-          sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${BUILD_NUMBER}"
-          sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:latest"
           sh "docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${BUILD_NUMBER}"
           sh "docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:latest"
         }
