@@ -1,9 +1,10 @@
-pipeline {
+pipeline { 
   agent any
 
   environment {
     COMPOSE_FILE = 'docker-compose.yml'
     DOCKER_IMAGE = 'synergy-platform-app'
+    DOCKERHUB_USER = credentials('aineshsridhar')
   }
 
   stages {
@@ -12,7 +13,7 @@ pipeline {
         sh 'docker --version || true'
         sh 'docker compose version || docker-compose --version || true'
         sh "docker compose -f ${COMPOSE_FILE} down --volumes --remove-orphans || true"
-      }
+      } 
     }
 
     stage('Checkout') {
@@ -28,10 +29,12 @@ pipeline {
     }
 
     stage('Build Image') {
-      steps {
-        sh "docker build --progress=plain -t ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-        sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
-      }
+        steps {
+            withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                sh "docker build --progress=plain -t ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+                sh "docker tag ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:latest"
+            }
+        }
     }
 
     stage('Start Services') {
