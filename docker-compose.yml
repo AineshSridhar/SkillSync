@@ -1,4 +1,4 @@
-services:
+services: 
   skillSync_db:
     image: mysql:8.0
     restart: unless-stopped
