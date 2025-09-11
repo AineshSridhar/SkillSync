@@ -29,14 +29,14 @@ pipeline {
 
     stage('Build Image') {
       steps {
-        sh "docker build --progress=plain -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+        sh "docker build --progress=plain -t ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${BUILD_NUMBER} ."
         sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
       }
     }
 
     stage('Start Services') {
       steps {
-        sh "docker compose -f ${COMPOSE_FILE} up -d --build --remove-orphans"
+        sh "docker compose -f ${COMPOSE_FILE} up -d --remove-orphans"
       }
     }
 

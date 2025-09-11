@@ -1,7 +1,7 @@
 services:
   skillSync_db:
     image: mysql:8.0
-    container_name: skillSync_db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: qwerty
       MYSQL_DATABASE: skillSync_db
@@ -12,16 +12,14 @@ services:
     volumes:
       - skillSync_mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "skillSync_db"]
       interval: 5s
       retries: 10
       timeout: 3s
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: skillSync_app
+    image: aineshsridhar/synergy-platform-app:latest
+    restart: unless-stopped
     env_file:
       - .env
     ports:
@@ -40,7 +38,6 @@ services:
         echo 'Starting app...' &&
         npm start
       "
-
 
 volumes:
   skillSync_mysql_data:
