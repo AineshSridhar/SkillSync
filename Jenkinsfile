@@ -22,7 +22,7 @@ pipeline {
     stage('Inject Env File') {
       steps {
         withCredentials([file(credentialsId: 'synergy-env', variable: 'ENV_FILE')]) {
-          sh 'cp $ENV_FILE .env'
+          sh 'cp $ENV_FILE $WORKSPACE/.env'
         }
       }
     }
