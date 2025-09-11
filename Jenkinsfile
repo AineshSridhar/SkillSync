@@ -4,7 +4,6 @@ pipeline {
   environment {
     COMPOSE_FILE = 'docker-compose.yml'
     DOCKER_IMAGE = 'synergy-platform-app'
-    DOCKERHUB_USER = credentials('aineshsridhar')
   }
 
   stages {
