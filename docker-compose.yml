@@ -12,10 +12,11 @@ services:
     volumes:
       - skillSync_mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "skillSync_db"]
-      interval: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pqwerty"]
+      interval: 10s
+      timeout: 5s
       retries: 10
-      timeout: 3s
+
 
   app:
     image: aineshsridhar/synergy-platform-app:latest
