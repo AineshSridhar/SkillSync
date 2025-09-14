@@ -42,11 +42,16 @@ pipeline {
       }
     }
 
-    stage('Verify & Test') {
+        stage('UI Tests - Selenium') {
       steps {
-        sh "docker ps -a"
-        // sh "docker compose exec -T app npm test || docker run --rm ${DOCKER_IMAGE}:${BUILD_NUMBER} npm test"
-        echo "Skipping test stage as no test script is defined"
+        sh "docker compose -f ${COMPOSE_FILE} exec -T app pytest tests/selenium/"
+      }
+    }
+
+    stage('Monitor with Prometheus & Grafana') {
+      steps {
+        echo "Prometheus at http://localhost:9090"
+        echo "Grafana at http://localhost:3001 (default login: admin/admin)"
       }
     }
 

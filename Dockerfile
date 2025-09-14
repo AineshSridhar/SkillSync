@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Python test dependencies
+RUN pip3 install pytest selenium
+
 # Set working directory
 WORKDIR /app
 
@@ -25,7 +28,6 @@ RUN npm install -g npm@latest
 
 # Install dependencies
 RUN npm ci --prefer-offline --no-audit --progress=false
-
 
 # Copy the rest of the code
 COPY . .
