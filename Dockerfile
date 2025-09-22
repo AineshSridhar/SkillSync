@@ -4,6 +4,9 @@ FROM node:20
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
+    python3-pip \
+    python3-pytest \
+    python3-selenium \
     make \
     g++ \
     libcairo2-dev \
@@ -13,10 +16,7 @@ RUN apt-get update && apt-get install -y \
     librsvg2-dev \
     default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
-
-# Install Python test dependencies
-RUN pip3 install pytest selenium
-
+    
 # Set working directory
 WORKDIR /app
 

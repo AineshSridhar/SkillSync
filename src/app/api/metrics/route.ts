@@ -1,12 +1,13 @@
-import client from 'prom-client';
+import { NextResponse } from "next/server";
 
-const collectDefaultMetrics = client.collectDefaultMetrics;
-collectDefaultMetrics();
-
-export async function GET(req: Request) {
-  const metrics = await client.register.metrics();
-  return new Response(metrics, {
+export async function GET() {
+  const metrics = `
+  # HELP my_app_requests_total Total requests
+  # TYPE my_app_requests_total counter
+  my_app_requests_total{method="GET"} 1
+  `;
+  return new NextResponse(metrics, {
     status: 200,
-    headers: { 'Content-Type': client.register.contentType },
+    headers: { "Content-Type": "text/plain" },
   });
 }
