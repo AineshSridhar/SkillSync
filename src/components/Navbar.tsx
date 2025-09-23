@@ -31,7 +31,7 @@ export default async function Navbar() {
       ) : (
         <div className="flex self-stretch bg-orange-500 font-bold text-white">
           <Link 
-            href="/login" 
+            href="/auth?mode=login" 
             className="flex items-center px-5 transition-colors hover:bg-orange-600"
           >
             Login
@@ -40,7 +40,7 @@ export default async function Navbar() {
           <div className="w-px bg-white/50"></div>
 
           <Link 
-            href="/register" 
+            href="/auth?mode=register" 
             className="flex items-center px-5 transition-colors hover:bg-orange-600"
           >
             Register

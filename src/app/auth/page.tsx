@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Mail, KeyRound, User, LoaderCircle, Link } from 'lucide-react'
 
 export default function AuthPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [form, setForm] = useState({
     name: '',
@@ -22,6 +24,13 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showProfileForm, setShowProfileForm] = useState(false)
+
+  useEffect(() => {
+    const paramMode = searchParams.get('mode')
+    if (paramMode == 'register' || paramMode == 'login'){
+      setMode(paramMode)
+    }
+  }, [searchParams])
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -103,7 +112,8 @@ export default function AuthPage() {
   }
 
   function switchMode() {
-    setMode(prevMode => (prevMode === 'login' ? 'register' : 'login'))
+    const newMode = mode === 'login' ? 'register' : 'login'
+    router.push(`/auth?mode=${newMode}`)
     setForm({ name: '', email: '', password: '', confirmPassword: '' })
     setError(null)
     setShowProfileForm(false)
@@ -122,7 +132,7 @@ export default function AuthPage() {
       <div className="relative z-10 flex min-h-screen items-center justify-center lg:justify-end">
         <div className="w-full max-w-md p-6 lg:mr-[10%]">
           <div className="relative overflow-hidden">
-            <div className={`transition-all duration-500 ease-in-out ${showProfileForm ? 'h-[420px]' : mode === 'register' ? 'h-[560px]' : 'h-[420px]'}`}>
+            <div className={`transition-all duration-500 ease-in-out ${showProfileForm ? 'h-[450px]' : mode === 'register' ? 'h-[560px]' : 'h-[420px]'}`}>
               {/* Profile Completion Form */}
               {showProfileForm ? (
                 <div className="absolute w-full p-2 transition-all duration-700 ease-in-out opacity-100 translate-x-0">

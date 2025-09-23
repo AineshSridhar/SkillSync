@@ -9,10 +9,11 @@ export async function POST(req: NextRequest, context : any ) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const {id} = context.params;
+    const {id} = await context.params;
     const projectId = parseInt(id, 10);
     console.log(projectId)
     const body = await req.json();
+    console.log(body);
     const { projectRequiredRoleId } = body;
 
     // Check required data

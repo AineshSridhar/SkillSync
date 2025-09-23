@@ -164,7 +164,7 @@ export default function Dashboard({ user }) {
               {/* Recommendations */}
               <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
                 <h2 className="text-lg font-bold text-orange-500 mb-4">
-                  Recommended For You
+                  My applications
                 </h2>
                 {user.recommendations.length === 0 ? (
                   <p className="text-gray-500">No recommendations yet.</p>

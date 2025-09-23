@@ -13,6 +13,7 @@ import AIScoreSpeedometer from "@/components/AIScoreSpeedometer";
 import { useRouter } from "next/navigation";
 
 type ProfileData = {
+  id?: string;
   name: string;
   bio: string;
   linkedin: string;
@@ -86,7 +87,7 @@ export default function ProfileForm({
     async function fetchAiScores() {
       setIsLoadingScores(true);
       try {
-        const res = await fetch("/api/profile/me/scores");
+        const res = await fetch(`/api/profile/${user.id}/scores`);
         if (res.ok) {
           const data = await res.json();
           setAiScores(data.scores);
@@ -101,7 +102,7 @@ export default function ProfileForm({
       }
     }
     fetchAiScores();
-  }, [user.name]); // Re-fetch when user changes
+  }, [user.id]); // Re-fetch when user changes
 
   // Fetch resume from backend on mount or user change
   useEffect(() => {
