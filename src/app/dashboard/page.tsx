@@ -61,6 +61,29 @@ export default async function DashboardPage() {
       requiredRoles: true,
     },
   })
+  
+  const allApplications = await prisma.application.findMany({
+    where : {
+      userId: user.id,
+    },
+    select: {
+      id: true,
+      status: true,
+      appliedAt: true,
+      projectRequiredRole: {
+        select : {
+          id: true,
+          role: true,
+          project : {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+      },
+    },
+  })
 
   const profileFields = [
     userInfo?.profile?.bio,
@@ -79,7 +102,7 @@ export default async function DashboardPage() {
     profilePic: userInfo?.profile?.profilePic || '/default-profile.jpg',
     profileCompletion,
     projects: allProjects, // includes requiredRoles
-    recommendations: [], // TODO
+    myApplications: allApplications,
     events: [], // TODO
   }
 

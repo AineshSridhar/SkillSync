@@ -166,18 +166,18 @@ export default function Dashboard({ user }) {
                 <h2 className="text-lg font-bold text-orange-500 mb-4">
                   My applications
                 </h2>
-                {user.recommendations.length === 0 ? (
-                  <p className="text-gray-500">No recommendations yet.</p>
+                {user.myApplications.length === 0 ? (
+                  <p className="text-gray-500">No applications sent yet.</p>
                 ) : (
                   <ul className="space-y-3">
-                    {user.recommendations.map((rec) => (
+                    {user.myApplications.map((rec) => (
                       <li
                         key={rec.id}
                         className="flex justify-between items-center"
                       >
-                        <span className="text-gray-700">{rec.title}</span>
+                        <span className="text-gray-700">{rec.projectRequiredRole.project.title}</span>
                         <button className="bg-orange-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-orange-600 transition-colors">
-                          Join
+                          {rec.status}
                         </button>
                       </li>
                     ))}
